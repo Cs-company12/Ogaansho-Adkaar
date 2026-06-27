@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maalinta Ibaadada - Daily Worship Checklist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1a5f3c;
@@ -1283,10 +1283,8 @@
                 message += `${isDone ? '✅' : '❌'} ${activity.en}\n`;
             });
 
-            message += `\n✅ Completed tasks:\n`;
-            message += completedTasks.length ? completedTasks.map(task => `✅ ${task}`).join('\n') : 'None';
-            message += `\n\n❌ Incomplete tasks:\n`;
-            message += incompleteTasks.length ? incompleteTasks.map(task => `❌ ${task}`).join('\n') : 'None';
+          
+           
             message += `\n\nCompletion: ${completed}/${total} (${percent}%)\n\n`;
             message += `Alhamdulillah Allah Naga Aqbalo. Ameen!`;
 
