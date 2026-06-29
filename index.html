@@ -1028,23 +1028,24 @@
     <script>
         // ===================== DATA =====================
         const ACTIVITIES = [
-            { id: 'salah', en: 'SALAADA 5 TASALAAD', so: 'Salaadda (5-Tii SALADOOD)', icon: '🕌' },
-            { id: 'sunnah', en: 'SUNOOYINKI MATUKATAY', so: 'Salaadda Sunnada', icon: '🤲' },
-            { id: 'adhkar', en: 'Adhkar (SABAAX & MASAA)', so: 'ADKAARTA (Subax & Habeen)', icon: '📿' },
-            { id: 'istighfar', en: 'ISTIQFAARTA(100)', so: 'Istagfaarta (Cafwad Doynta)', icon: '😔' },
-            { id: 'tasbeeh', en: ' (SubhanAllah = 100)', so: 'Tasbiixda (Subxaanallaah)', icon: '☝️' },
-            { id: 'tahlil', en: 'La ilaha illallah = 100', so: ' (Laa Ilaaha Ill-Allaah = 100)', icon: '✨' },
-            { id: 'SALIGA NABIGA', en: 'MAKU SALISAY = 100', so: 'Salaadda Rasuulka ﷺ', icon: '❤️' },
-            { id: 'qiyam', en: 'Qiyam al-Layl (MATUKATAY SALAAD LAAYL-KA)', so: 'Qiyaamul-Layl (Salaadda Habeenka)', icon: '🌙' },
-            { id: 'duha', en: 'Salat al-Duha MATUKATAY', so: 'Salaadda Duha ', icon: '☀️' },
-            { id: 'quran', en: 'Quran MA AQRISATAY', so: 'Akhristaanka Quraanka', icon: '📖' },
-            { id: 'SOONKA', en: 'MALINTA ISIINTA KHAMIISTA ', so: 'Soonka Isniin & Khamiis', icon: '⛔' }
+            { id: 'salah',   en: 'SALAADA 5 TASALAAD',              so: 'Salaadda (5-Tii SALADOOD)',             icon: '🕌' },
+            { id: 'sunnah',  en: 'SUNOOYINKI MATUKATAY',            so: 'Salaadda Sunnada',                      icon: '🤲' },
+            { id: 'adhkar',  en: 'Adhkar (SABAAX & MASAA)',          so: 'ADKAARTA (Subax & Habeen)',              icon: '📿' },
+            { id: 'istighfar', en: 'ISTIQFAARTA(100)',               so: 'Istagfaarta (Cafwad Doynta)',            icon: '😔' },
+            { id: 'tasbeeh', en: ' (SubhanAllah = 100)',             so: 'Tasbiixda (Subxaanallaah)',              icon: '☝️' },
+            { id: 'tahlil',  en: 'La ilaha illallah = 100',          so: ' (Laa Ilaaha Ill-Allaah = 100)',        icon: '✨' },
+            { id: 'SALIGA NABIGA', en: 'MAKU SALISAY = 100',        so: 'Salaadda Rasuulka ﷺ',                   icon: '❤️' },
+            { id: 'qiyam',   en: 'Qiyam al-Layl (MATUKATAY SALAAD LAAYL-KA)', so: 'Qiyaamul-Layl (Salaadda Habeenka)', icon: '🌙' },
+            { id: 'duha',    en: 'Salat al-Duha MATUKATAY',         so: 'Salaadda Duha ',                        icon: '☀️' },
+            { id: 'quran',   en: 'Quran MA AQRISATAY',              so: 'Akhristaanka Quraanka',                 icon: '📖' },
+            { id: 'SOONKA',  en: 'MALINTA ISIINTA KHAMIISTA ',      so: 'Soonka Isniin & Khamiis',               icon: '⛔' }
         ];
 
-        const WHATSAPP_GROUP = 'https://chat.whatsapp.com/JIXJpL36h3Y2HaV0KCHaxP';
+        // ===================== CONFIG =====================
+        // ⚠️ Telegram: uses t.me/share/url so the message auto-fills in the chat
         const WHATSAPP_BUSINESS_URL = 'https://api.whatsapp.com/send?text=';
-        const WHATSAPP_URL = 'https://wa.me/?text=';
-        const TELEGRAM_GROUP = 'https://t.me/+k1XwDqtuTfFjNjdk';
+        const WHATSAPP_URL          = 'https://wa.me/?text=';
+        const TELEGRAM_SHARE_URL    = 'https://t.me/share/url?url=&text='; // auto-fills message ✅
 
         // ===================== STATE =====================
         let userName = localStorage.getItem('worship_userName') || '';
@@ -1067,7 +1068,6 @@
                 updateUserDisplay();
             }
 
-            // Setup navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.addEventListener('click', () => switchPage(tab.dataset.page));
             });
@@ -1076,13 +1076,15 @@
         // ===================== DATE HANDLING =====================
         function getTodayKey() {
             const now = new Date();
-            return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+            return now.getFullYear() + '-' +
+                   String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                   String(now.getDate()).padStart(2, '0');
         }
 
         function getFormattedDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return now.toLocaleDateString('en-US', options);
+            return new Date().toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
         }
 
         function getDayName() {
@@ -1096,10 +1098,9 @@
 
         function checkNewDay() {
             const savedDate = localStorage.getItem('worship_currentDate');
-            const todayKey = getTodayKey();
+            const todayKey  = getTodayKey();
 
             if (savedDate !== todayKey) {
-                // Save previous day if exists
                 const prevData = localStorage.getItem('worship_todayData');
                 if (prevData && savedDate) {
                     const parsed = JSON.parse(prevData);
@@ -1107,23 +1108,13 @@
                         saveToHistory(savedDate, parsed);
                     }
                 }
-
-                // Create new day
-                todayData = {
-                    date: todayKey,
-                    completed: [],
-                    times: {},
-                    locked: false
-                };
+                todayData = { date: todayKey, completed: [], times: {}, locked: false };
                 localStorage.setItem('worship_currentDate', todayKey);
                 saveTodayData();
             } else {
                 const data = localStorage.getItem('worship_todayData');
                 todayData = data ? JSON.parse(data) : {
-                    date: todayKey,
-                    completed: [],
-                    times: {},
-                    locked: false
+                    date: todayKey, completed: [], times: {}, locked: false
                 };
             }
 
@@ -1132,8 +1123,8 @@
         }
 
         function updateLockState() {
-            const notice = document.getElementById('lockedNotice');
-            const btn = document.getElementById('completeBtn');
+            const notice    = document.getElementById('lockedNotice');
+            const btn       = document.getElementById('completeBtn');
             const container = document.getElementById('checklistContainer');
 
             if (isLocked) {
@@ -1158,11 +1149,11 @@
 
             ACTIVITIES.forEach(activity => {
                 const isCompleted = todayData.completed.includes(activity.id);
-                const time = todayData.times[activity.id] || '';
+                const time        = todayData.times[activity.id] || '';
 
                 const item = document.createElement('div');
                 item.className = `checklist-item ${isCompleted ? 'completed' : ''}`;
-                item.onclick = () => toggleActivity(activity.id);
+                item.onclick   = () => toggleActivity(activity.id);
 
                 item.innerHTML = `
                     <div class="checkbox">
@@ -1176,7 +1167,6 @@
                         ${time ? `<div class="item-time">✓ Completed at ${time}</div>` : ''}
                     </div>
                 `;
-
                 container.appendChild(item);
             });
         }
@@ -1201,12 +1191,12 @@
 
         // ===================== PROGRESS =====================
         function updateProgress() {
-            const total = ACTIVITIES.length;
+            const total     = ACTIVITIES.length;
             const completed = todayData.completed.length;
-            const percent = Math.round((completed / total) * 100);
+            const percent   = Math.round((completed / total) * 100);
 
-            document.getElementById('progressCount').textContent = `${completed}/${total} Completed`;
-            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressCount').textContent  = `${completed}/${total} Completed`;
+            document.getElementById('progressBar').style.width    = `${percent}%`;
             document.getElementById('progressPercent').textContent = `${percent}%`;
         }
 
@@ -1227,12 +1217,12 @@
             showToast('Day completed! Alhamdulillah! / Maalim dhammaystiran!');
         }
 
-        // ===================== SUMMARY =====================
+        // ===================== SUMMARY MODAL =====================
         function showSummary() {
-            const modal = document.getElementById('summaryModal');
-            const total = ACTIVITIES.length;
+            const modal     = document.getElementById('summaryModal');
+            const total     = ACTIVITIES.length;
             const completed = todayData.completed.length;
-            const percent = Math.round((completed / total) * 100);
+            const percent   = Math.round((completed / total) * 100);
 
             document.getElementById('summaryDate').textContent = getFormattedDate();
             document.getElementById('summaryName').textContent = userName || 'Muslim';
@@ -1243,7 +1233,7 @@
 
             ACTIVITIES.forEach(activity => {
                 const isDone = todayData.completed.includes(activity.id);
-                const div = document.createElement('div');
+                const div    = document.createElement('div');
                 div.className = `summary-item ${isDone ? '' : 'missed'}`;
                 div.innerHTML = `
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1263,28 +1253,25 @@
 
         // ===================== SHARE =====================
         function getShareDate() {
-            return new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            return new Date().toLocaleDateString('en-GB', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
         }
 
         function buildShareMessage() {
-            const total = ACTIVITIES.length;
+            const total     = ACTIVITIES.length;
             const completed = todayData?.completed?.length || 0;
-            const percent = Math.round((completed / total) * 100);
-            const completedTasks = ACTIVITIES.filter(activity => todayData?.completed?.includes(activity.id)).map(activity => activity.en);
-            const incompleteTasks = ACTIVITIES.filter(activity => !todayData?.completed?.includes(activity.id)).map(activity => activity.en);
+            const percent   = Math.round((completed / total) * 100);
 
             let message = `Name: ${userName || 'Muslim'}\n`;
-            message += `Date: ${getShareDate()}\n\n`;
-            message += `Daily Worship Checklist\n`;
-          
+            message    += `Date: ${getShareDate()}\n\n`;
+            message    += `Daily Worship Checklist\n`;
 
             ACTIVITIES.forEach(activity => {
                 const isDone = todayData?.completed?.includes(activity.id);
                 message += `${isDone ? '✅' : '❌'} ${activity.en}\n`;
             });
 
-          
-           
             message += `\n\nCompletion: ${completed}/${total} (${percent}%)\n\n`;
             message += `Alhamdulillah Allah Naga Aqbalo. Ameen!`;
 
@@ -1300,6 +1287,7 @@
             const message = buildShareMessage();
             const encoded = encodeURIComponent(message);
 
+            // Copy to clipboard as a bonus
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(message).catch(() => {});
             }
@@ -1310,7 +1298,8 @@
             } else if (platform === 'whatsapp') {
                 url = `${WHATSAPP_URL}${encoded}`;
             } else if (platform === 'telegram') {
-                url = `${TELEGRAM_GROUP}`;
+                // ✅ FIX: auto-fills the message inside Telegram — same as WhatsApp
+                url = `${TELEGRAM_SHARE_URL}${encoded}`;
             }
 
             if (url) {
@@ -1320,34 +1309,23 @@
             showToast('Message prepared. Open your app to send it.');
         }
 
-        function shareWhatsAppBusiness() {
-            shareToPlatform('whatsapp-business');
-        }
-
-        function shareWhatsApp() {
-            shareToPlatform('whatsapp');
-        }
-
-        function shareTelegram() {
-            shareToPlatform('telegram');
-        }
+        function shareWhatsAppBusiness() { shareToPlatform('whatsapp-business'); }
+        function shareWhatsApp()         { shareToPlatform('whatsapp'); }
+        function shareTelegram()         { shareToPlatform('telegram'); }
 
         // ===================== HISTORY =====================
         function loadHistory() {
             const data = localStorage.getItem('worship_history');
-            if (data) {
-                history = JSON.parse(data);
-            }
+            if (data) history = JSON.parse(data);
         }
 
         function saveToHistory(date, data) {
-            // Remove existing entry for this date
             history = history.filter(h => h.date !== date);
             history.unshift({
-                date: date,
+                date:      date,
                 completed: [...data.completed],
-                times: { ...data.times },
-                locked: true
+                times:     { ...data.times },
+                locked:    true
             });
             localStorage.setItem('worship_history', JSON.stringify(history));
             renderHistory();
@@ -1359,30 +1337,30 @@
             if (history.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                         <p>No history yet.<br>Wax taariikh ah ma jiro hadda.</p>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
             container.innerHTML = '';
             history.forEach(record => {
-                const total = ACTIVITIES.length;
+                const total     = ACTIVITIES.length;
                 const completed = record.completed.length;
-                const percent = Math.round((completed / total) * 100);
+                const percent   = Math.round((completed / total) * 100);
 
                 let badgeClass = 'missed';
-                let badgeText = `${percent}%`;
-                if (percent === 100) {
-                    badgeClass = 'excellent';
-                    badgeText = '100% ★';
-                } else if (percent >= 70) {
-                    badgeClass = 'good';
-                }
+                let badgeText  = `${percent}%`;
+                if (percent === 100) { badgeClass = 'excellent'; badgeText = '100% ★'; }
+                else if (percent >= 70) { badgeClass = 'good'; }
 
                 const dateObj = new Date(record.date + 'T00:00:00');
-                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const dateStr = dateObj.toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric'
+                });
 
                 const div = document.createElement('div');
                 div.className = 'history-item';
@@ -1399,33 +1377,30 @@
 
         // ===================== STATS =====================
         function updateStats() {
-            // Calculate streak
-            let streak = 0;
-            const today = new Date();
+            let streak    = 0;
+            const today   = new Date();
             const checkDate = new Date(today);
+            const todayKey  = getTodayKey();
 
-            // Check if today is completed
-            const todayKey = getTodayKey();
             const todayRecord = history.find(h => h.date === todayKey);
             if (todayRecord || (todayData && todayData.locked)) {
                 streak = 1;
                 checkDate.setDate(checkDate.getDate() - 1);
 
                 while (true) {
-                    const key = checkDate.getFullYear() + '-' + String(checkDate.getMonth() + 1).padStart(2, '0') + '-' + String(checkDate.getDate()).padStart(2, '0');
+                    const key = checkDate.getFullYear() + '-' +
+                                String(checkDate.getMonth() + 1).padStart(2, '0') + '-' +
+                                String(checkDate.getDate()).padStart(2, '0');
                     const record = history.find(h => h.date === key);
                     if (record && record.completed.length > 0) {
                         streak++;
                         checkDate.setDate(checkDate.getDate() - 1);
-                    } else {
-                        break;
-                    }
+                    } else { break; }
                 }
             }
 
             document.getElementById('statStreak').textContent = streak;
 
-            // Best day
             let best = 0;
             history.forEach(h => {
                 const pct = Math.round((h.completed.length / ACTIVITIES.length) * 100);
@@ -1441,8 +1416,8 @@
         // ===================== USER NAME =====================
         function updateUserDisplay() {
             document.getElementById('userNameDisplay').textContent = userName || 'Welcome';
-            document.getElementById('userAvatar').textContent = userName ? userName.charAt(0).toUpperCase() : '?';
-            document.getElementById('nameInput').value = userName || '';
+            document.getElementById('userAvatar').textContent      = userName ? userName.charAt(0).toUpperCase() : '?';
+            document.getElementById('nameInput').value             = userName || '';
         }
 
         function showNameModal() {
@@ -1451,7 +1426,7 @@
 
         function saveFirstName() {
             const input = document.getElementById('firstNameInput');
-            const name = input.value.trim();
+            const name  = input.value.trim();
 
             if (!name) {
                 showToast('Please enter your name / Fadlan geli magacaaga');
@@ -1468,7 +1443,7 @@
 
         function saveName() {
             const input = document.getElementById('nameInput');
-            const name = input.value.trim();
+            const name  = input.value.trim();
 
             if (!name) {
                 showToast('Name cannot be empty / Magaca ma banaan kara');
@@ -1483,19 +1458,16 @@
 
         // ===================== SETTINGS =====================
         function clearAllData() {
-            if (!confirm('Are you sure? This will delete ALL your data.\\n\\nMa hubtaa? Tani waxay tirtiri doontaa xogtaada oo dhan.')) {
+            if (!confirm('Are you sure? This will delete ALL your data.\n\nMa hubtaa? Tani waxay tirtiri doontaa xogtaada oo dhan.')) {
                 return;
             }
-
             localStorage.removeItem('worship_userName');
             localStorage.removeItem('worship_currentDate');
             localStorage.removeItem('worship_todayData');
             localStorage.removeItem('worship_history');
-
-            userName = '';
-            history = [];
+            userName  = '';
+            history   = [];
             todayData = null;
-
             location.reload();
         }
 
@@ -1508,13 +1480,9 @@
         function switchPage(page) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.nav-tab[data-page="${page}"]`).classList.add('active');
-
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(`page-${page}`).classList.remove('hidden');
-
-            if (page === 'history') {
-                renderHistory();
-            }
+            if (page === 'history') renderHistory();
         }
 
         // ===================== TOAST =====================
